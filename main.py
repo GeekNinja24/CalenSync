@@ -118,7 +118,35 @@ def get_date(text):
     if day != -1:  
         return datetime.date(month=month, day=day, year=year)
 
+def get_events(day, service):
+    # Call the Calendar API
+    date = datetime.datetime.combine(day, datetime.datetime.min.time())
+    end_date = datetime.datetime.combine(day, datetime.datetime.max.time())
+    utc = pytz.UTC
+    date = date.astimezone(utc)
+    end_date = end_date.astimezone(utc)
 
+    events_result = service.events().list(calendarId='primary', timeMin=date.isoformat(), timeMax=end_date.isoformat(),
+                                        singleEvents=True,
+                                        orderBy='startTime').execute()
+    events = events_result.get('items', [])
+
+    if not events:
+        speak('No upcoming events found.')
+    else:
+        speak(f"You have {len(events)} events on this day.")
+
+        for event in events:
+            start = event['start'].get('dateTime', event['start'].get('date'))
+            print(start, event['summary'])
+            start_time = str(start.split("T")[1].split("-")[0])
+            if int(start_time.split(":")[0]) < 12:
+                start_time = start_time + "am"
+            else:
+                start_time = str(int(start_time.split(":")[0])-12) + start_time.split(":")[1]
+                start_time = start_time + "pm"
+
+            speak(event["summary"] + " at " + start_time)
 
 
 WAKE = "Cortana"
