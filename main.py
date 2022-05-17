@@ -147,7 +147,15 @@ def get_events(day, service):
                 start_time = start_time + "pm"
 
             speak(event["summary"] + " at " + start_time)
+#function to open notepad editor and start typing using pytts
 
+def note(text):
+    date = datetime.datetime.now()
+    file_name = str(date).replace(":", "-") + "-note.txt"
+    with open(file_name, "w") as f:
+        f.write(text)
+
+    subprocess.Popen(["notepad.exe", file_name])
 
 WAKE = "Cortana"
 SERVICE = authenticate_google()
