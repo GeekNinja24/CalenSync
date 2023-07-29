@@ -157,7 +157,7 @@ def note(text):
 
     subprocess.Popen(["notepad.exe", file_name])
 
-WAKE = "Cortana"
+WAKE = "Hello"
 SERVICE = authenticate_google()
 print("Start")
 
